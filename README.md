@@ -161,6 +161,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 🙏 Acknowledgments
 
 - Built as part of "Django 3 - Full Stack Websites with Python Web Development course" from Nick Walter (Zappy Code)
+- **Note on Original Project License**: The original [django3-todowoo-project](https://github.com/zappycode/django3-todowoo-project) by ZappyCode does not include a LICENSE file. This means the original code is protected by default copyright laws (all rights reserved), and cannot be used, modified, or distributed without explicit permission from the author. This repository (`apadlo/todos`) is an independent implementation inspired by the course material and is licensed under the MIT License (see below)
 
 ## 📧 Contact
 
