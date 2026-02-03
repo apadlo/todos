@@ -160,13 +160,10 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 🙏 Acknowledgments
 
-- Built with [Django](https://www.djangoproject.com/)
-- Inspired by the need for simple, effective task management
+- Built as part of "Django 3 - Full Stack Websites with Python Web Development course" from Nick Walter (Zappy Code)
 
 ## 📧 Contact
 
 For questions or support, please open an issue on GitHub.
 
 ---
-
-**Made with ❤️ by the Todo Woo team**
