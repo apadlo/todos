@@ -160,6 +160,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 🙏 Acknowledgments
 
+- This project was created as part of the **"Django 3 - Full Stack Websites with Python Web Development"** course by **Nick Walter** ([Zappy Code](https://www.zapycode.com/))
 - Built with [Django](https://www.djangoproject.com/)
 - Inspired by the need for simple, effective task management
 
