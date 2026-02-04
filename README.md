@@ -173,9 +173,10 @@ pytest todo/tests.py::TodoModelTest::test_todo_creation
   - Sets `DJANGO_SETTINGS_MODULE = todowoo.settings`
   - Defines test file patterns: `tests.py`, `test_*.py`, `*_tests.py`
 
-- **config_runner.toml**: Stores test user credentials for consistent testing
-  - Test user credentials for authentication tests
-  - New user credentials for signup tests
+- **config_runner.toml**: Stores test-only user credentials for consistent testing across environments
+  - Test user credentials for authentication tests (not for production use)
+  - New user credentials for signup tests (not for production use)
+  - This file is intentionally tracked in git as it contains only test fixtures
 
 - **conftest.py**: Provides pytest fixtures for common test setup
   - `config`: Loads test configuration from config_runner.toml
