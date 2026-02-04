@@ -1,15 +1,15 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
-from django.utils import timezone
 from .models import Todo
 from .forms import TodoForm
+from .test_data import TEST_USERNAME, TEST_PASSWORD, NEW_USER_USERNAME, NEW_USER_PASSWORD
 
 
 class TodoModelTest(TestCase):
     """Test the Todo model"""
 
     def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='testpass123')
+        self.user = User.objects.create_user(username=TEST_USERNAME, password=TEST_PASSWORD)
 
     def test_todo_creation(self):
         """Test that a Todo can be created with required fields"""
@@ -79,20 +79,20 @@ class SignupUserViewTest(TestCase):
     def test_signup_post_create_user(self):
         """Test that a new user can be created through signup"""
         client = Client()
-        response = client.post('/signup/', {
-            'username': 'newuser',
-            'password1': 'testpass123!@#',
-            'password2': 'testpass123!@#'
+        client.post('/signup/', {
+            'username': NEW_USER_USERNAME,
+            'password1': NEW_USER_PASSWORD,
+            'password2': NEW_USER_PASSWORD
         })
         self.assertEqual(User.objects.count(), 1)
-        self.assertEqual(User.objects.first().username, 'newuser')
+        self.assertEqual(User.objects.first().username, NEW_USER_USERNAME)
 
 
 class LoginUserViewTest(TestCase):
     """Test the login user view"""
 
     def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='testpass123')
+        self.user = User.objects.create_user(username=TEST_USERNAME, password=TEST_PASSWORD)
 
     def test_login_get_request(self):
         """Test that login page loads correctly"""
@@ -105,19 +105,19 @@ class CreateTodoViewTest(TestCase):
     """Test the create todo view"""
 
     def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='testpass123')
+        self.user = User.objects.create_user(username=TEST_USERNAME, password=TEST_PASSWORD)
         self.client = Client()
-        self.client.login(username='testuser', password='testpass123')
+        self.client.login(username=TEST_USERNAME, password=TEST_PASSWORD)
 
     def test_create_todo_requires_login(self):
         """Test that creating todo requires authentication"""
         client = Client()
         response = client.get('/create/')
-        self.assertEqual(response.status_code, 302)  # Redirect to login
+        self.assertEqual(response.status_code, 302)  # Redirect to log in
 
     def test_create_todo_post(self):
         """Test creating a new todo"""
-        response = self.client.post('/create/', {
+        self.client.post('/create/', {
             'title': 'New Test Todo',
             'memo': 'Test memo',
             'important': True
@@ -130,9 +130,9 @@ class CompleteTodoViewTest(TestCase):
     """Test the complete todo functionality"""
 
     def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='testpass123')
+        self.user = User.objects.create_user(username=TEST_USERNAME, password=TEST_PASSWORD)
         self.client = Client()
-        self.client.login(username='testuser', password='testpass123')
+        self.client.login(username=TEST_USERNAME, password=TEST_PASSWORD)
         self.todo = Todo.objects.create(
             title='Test Todo',
             user=self.user
@@ -150,9 +150,9 @@ class DeleteTodoViewTest(TestCase):
     """Test the delete todo functionality"""
 
     def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='testpass123')
+        self.user = User.objects.create_user(username=TEST_USERNAME, password=TEST_PASSWORD)
         self.client = Client()
-        self.client.login(username='testuser', password='testpass123')
+        self.client.login(username=TEST_USERNAME, password=TEST_PASSWORD)
         self.todo = Todo.objects.create(
             title='Test Todo',
             user=self.user
