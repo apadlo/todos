@@ -141,6 +141,7 @@ class CompleteTodoViewTest(TestCase):
     def test_complete_todo(self):
         """Test that a todo can be marked as completed"""
         response = self.client.post(f'/todo/{self.todo.pk}/complete')
+        self.assertEqual(response.status_code, 302)  # Redirect after completion
         self.todo.refresh_from_db()
         self.assertIsNotNone(self.todo.datecompleted)
 
@@ -161,4 +162,5 @@ class DeleteTodoViewTest(TestCase):
         """Test that a todo can be deleted"""
         self.assertEqual(Todo.objects.count(), 1)
         response = self.client.post(f'/todo/{self.todo.pk}/delete')
+        self.assertEqual(response.status_code, 302)  # Redirect after deletion
         self.assertEqual(Todo.objects.count(), 0)
