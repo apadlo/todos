@@ -22,6 +22,7 @@ A modern, user-friendly todo list application built with Django that helps you o
 - **Database**: SQLite (default, easily configurable for PostgreSQL/MySQL)
 - **Frontend**: HTML, CSS (Bootstrap), Django Templates
 - **Authentication**: Django's built-in authentication system
+- **Testing**: pytest with pytest-django plugin
 
 ## 📋 Prerequisites
 
@@ -129,9 +130,83 @@ todos/
 
 ### Running Tests
 
+This project includes comprehensive test coverage using Django's built-in testing framework with pytest support.
+
+#### Using Django's Test Runner
+
 ```bash
 python manage.py test
 ```
+
+For verbose output:
+```bash
+python manage.py test --verbosity=2
+```
+
+#### Using Pytest
+
+The project is configured with pytest-django for an alternative testing workflow:
+
+```bash
+pytest
+```
+
+For verbose output with detailed test names:
+```bash
+pytest -v
+```
+
+For even more detailed output:
+```bash
+pytest -vv
+```
+
+Run specific test files or test classes:
+```bash
+pytest todo/tests.py::TodoModelTest
+pytest todo/tests.py::TodoModelTest::test_todo_creation
+```
+
+#### Test Configuration
+
+- **pytest.ini**: Configures pytest to work with Django
+  - Sets `DJANGO_SETTINGS_MODULE = todowoo.settings`
+  - Defines test file patterns: `tests.py`, `test_*.py`, `*_tests.py`
+
+- **config_runner.toml**: Stores test user credentials for consistent testing
+  - Test user credentials for authentication tests
+  - New user credentials for signup tests
+
+- **conftest.py**: Provides pytest fixtures for common test setup
+  - `config`: Loads test configuration from config_runner.toml
+  - `test_user`: Creates a test user for authentication
+  - `authenticated_client`: Provides a logged-in test client
+
+#### Test Coverage
+
+The test suite includes **12 comprehensive tests** covering:
+
+##### Model Tests (TodoModelTest)
+- ✅ **Todo Creation**: Validates that Todo objects can be created with required fields (title, memo, user)
+- ✅ **String Representation**: Tests the `__str__` method returns the todo title
+
+##### Form Tests (TodoFormTest)
+- ✅ **Valid Form**: Ensures the TodoForm accepts valid data (title, memo, important flag)
+- ✅ **Missing Title Validation**: Verifies the form is invalid when title is missing
+
+##### View Tests
+- ✅ **Home View** (HomeViewTest): Tests the home page returns HTTP 200 status
+- ✅ **Signup View** (SignupUserViewTest):
+  - GET request loads the signup form
+  - POST request successfully creates a new user account
+- ✅ **Login View** (LoginUserViewTest): Tests the login page loads correctly
+- ✅ **Create Todo View** (CreateTodoViewTest):
+  - Requires authentication (redirects unauthenticated users)
+  - Successfully creates a new todo with valid data
+- ✅ **Complete Todo View** (CompleteTodoViewTest): Tests marking a todo as completed sets `datecompleted` timestamp
+- ✅ **Delete Todo View** (DeleteTodoViewTest): Verifies todos can be deleted successfully
+
+All tests use Django's TestCase class and are compatible with both Django's test runner and pytest.
 
 ### Create Migrations
 
