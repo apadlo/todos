@@ -1,15 +1,27 @@
+import pytest
+import toml
+import os
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from .models import Todo
 from .forms import TodoForm
-from .test_data import TEST_USERNAME, TEST_PASSWORD, NEW_USER_USERNAME, NEW_USER_PASSWORD
+
+# Load config_runner.toml once
+CONFIG_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config_runner.toml')
+config = toml.load(CONFIG_PATH)
+
+
+def get_unique_username(base, suffix):
+    return f"{base}_{suffix}"
 
 
 class TodoModelTest(TestCase):
     """Test the Todo model"""
 
     def setUp(self):
-        self.user = User.objects.create_user(username=TEST_USERNAME, password=TEST_PASSWORD)
+        self.username = get_unique_username(config['test_user']['username'], "model")
+        self.password = config['test_user']['password']
+        self.user = User.objects.create_user(username=self.username, password=self.password)
 
     def test_todo_creation(self):
         """Test that a Todo can be created with required fields"""
@@ -69,30 +81,35 @@ class HomeViewTest(TestCase):
 class SignupUserViewTest(TestCase):
     """Test the signup user view"""
 
+    def setUp(self):
+        self.client = Client()
+        self.username = get_unique_username(config['new_user']['username'], "signup")
+        self.password = config['new_user']['password']
+
     def test_signup_get_request(self):
         """Test that signup page loads correctly"""
-        client = Client()
-        response = client.get('/signup/')
+        response = self.client.get('/signup/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'form')
 
     def test_signup_post_create_user(self):
-        """Test that a new user can be created through signup"""
-        client = Client()
-        client.post('/signup/', {
-            'username': NEW_USER_USERNAME,
-            'password1': NEW_USER_PASSWORD,
-            'password2': NEW_USER_PASSWORD
+        """Test creating a new user via signup form"""
+        self.client.post('/signup/', {
+            'username': self.username,
+            'password1': self.password,
+            'password2': self.password
         })
         self.assertEqual(User.objects.count(), 1)
-        self.assertEqual(User.objects.first().username, NEW_USER_USERNAME)
+        self.assertEqual(User.objects.first().username, self.username)
 
 
 class LoginUserViewTest(TestCase):
     """Test the login user view"""
 
     def setUp(self):
-        self.user = User.objects.create_user(username=TEST_USERNAME, password=TEST_PASSWORD)
+        self.username = get_unique_username(config['test_user']['username'], "login")
+        self.password = config['test_user']['password']
+        self.user = User.objects.create_user(username=self.username, password=self.password)
 
     def test_login_get_request(self):
         """Test that login page loads correctly"""
@@ -105,9 +122,11 @@ class CreateTodoViewTest(TestCase):
     """Test the create todo view"""
 
     def setUp(self):
-        self.user = User.objects.create_user(username=TEST_USERNAME, password=TEST_PASSWORD)
+        self.username = get_unique_username(config['test_user']['username'], "createtodo")
+        self.password = config['test_user']['password']
+        self.user = User.objects.create_user(username=self.username, password=self.password)
         self.client = Client()
-        self.client.login(username=TEST_USERNAME, password=TEST_PASSWORD)
+        self.client.login(username=self.username, password=self.password)
 
     def test_create_todo_requires_login(self):
         """Test that creating todo requires authentication"""
@@ -130,9 +149,11 @@ class CompleteTodoViewTest(TestCase):
     """Test the complete todo functionality"""
 
     def setUp(self):
-        self.user = User.objects.create_user(username=TEST_USERNAME, password=TEST_PASSWORD)
+        self.username = get_unique_username(config['test_user']['username'], "complete")
+        self.password = config['test_user']['password']
+        self.user = User.objects.create_user(username=self.username, password=self.password)
         self.client = Client()
-        self.client.login(username=TEST_USERNAME, password=TEST_PASSWORD)
+        self.client.login(username=self.username, password=self.password)
         self.todo = Todo.objects.create(
             title='Test Todo',
             user=self.user
@@ -150,9 +171,11 @@ class DeleteTodoViewTest(TestCase):
     """Test the delete todo functionality"""
 
     def setUp(self):
-        self.user = User.objects.create_user(username=TEST_USERNAME, password=TEST_PASSWORD)
+        self.username = get_unique_username(config['test_user']['username'], "delete")
+        self.password = config['test_user']['password']
+        self.user = User.objects.create_user(username=self.username, password=self.password)
         self.client = Client()
-        self.client.login(username=TEST_USERNAME, password=TEST_PASSWORD)
+        self.client.login(username=self.username, password=self.password)
         self.todo = Todo.objects.create(
             title='Test Todo',
             user=self.user

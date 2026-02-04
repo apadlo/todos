@@ -1,0 +1,7 @@
+[test_user]
+username = "testuser"
+password = "testpass123"
+
+[new_user]
+username = "newuser"
+password = "testpass123!@#"
